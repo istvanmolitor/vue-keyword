@@ -14,6 +14,7 @@ export interface Keyword {
   is_stop_word: boolean
   alias_keyword_id: number | null
   alias_keyword?: KeywordOption | null
+  keywordables_count: number
 }
 
 export interface KeywordFormData {

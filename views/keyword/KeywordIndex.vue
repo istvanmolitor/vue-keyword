@@ -23,6 +23,7 @@ const columns: Column<Keyword>[] = [
   { key: 'name', label: 'Kulcsszo', sortable: true },
   { key: 'alias_keyword', label: 'Alias', sortable: false },
   { key: 'is_stop_word', label: 'Stop szo', sortable: true, width: '120px' },
+  { key: 'keywordables_count', label: 'Felhasználás', sortable: true, width: '130px' },
 ]
 
 const fetchKeywords = async (params: {
