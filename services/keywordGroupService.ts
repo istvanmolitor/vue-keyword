@@ -11,6 +11,7 @@ export interface KeywordGroup {
   id: number
   name: string
   slug: string
+  is_public: boolean
   keywords?: KeywordGroupKeyword[]
   created_at: string
   updated_at: string
@@ -19,6 +20,7 @@ export interface KeywordGroup {
 export interface KeywordGroupFormData {
   name: string
   slug: string
+  is_public: boolean
 }
 
 export interface PaginatedResponse<T> {
