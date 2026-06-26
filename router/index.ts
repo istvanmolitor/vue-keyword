@@ -19,6 +19,24 @@ const keywordRoutes: RouteRecordRaw[] = [
     component: () => import('../views/keyword/KeywordEdit.vue'),
     meta: { requiresAuth: true }
   },
+  {
+    path: '/admin/keyword-group',
+    name: 'keyword-keyword-groups',
+    component: () => import('../views/keywordGroup/KeywordGroupIndex.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/admin/keyword-group/create',
+    name: 'keyword-keyword-group-create',
+    component: () => import('../views/keywordGroup/KeywordGroupCreate.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/admin/keyword-group/:id/edit',
+    name: 'keyword-keyword-group-edit',
+    component: () => import('../views/keywordGroup/KeywordGroupEdit.vue'),
+    meta: { requiresAuth: true }
+  },
 ]
 
 export default keywordRoutes
