@@ -7,6 +7,11 @@ export interface KeywordOption {
   name: string
 }
 
+export interface KeywordGroupOption {
+  id: number
+  name: string
+}
+
 export interface Keyword {
   id: number
   name: string
@@ -15,6 +20,7 @@ export interface Keyword {
   alias_keyword_id: number | null
   alias_keyword?: KeywordOption | null
   keywordables_count: number
+  group_ids?: number[]
 }
 
 export interface KeywordFormData {
@@ -22,6 +28,7 @@ export interface KeywordFormData {
   slug: string
   is_stop_word: boolean
   alias_keyword_id: number | null
+  group_ids: number[]
 }
 
 export interface PaginatedResponse<T> {
@@ -46,6 +53,7 @@ export interface SingleResponse<T> {
 export interface KeywordCreateEditResponse {
   data?: Keyword
   alias_keywords: KeywordOption[]
+  keyword_groups?: KeywordGroupOption[]
 }
 
 export const keywordService = {

@@ -9,13 +9,16 @@ import CardTitle from '@admin/components/ui/CardTitle.vue'
 import InputField from '@admin/components/ui/InputField.vue'
 import { onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { keywordGroupService, type KeywordGroupFormData } from '../../services/keywordGroupService'
+import KeywordSelector from '../../components/KeywordSelector.vue'
+import { keywordGroupService, type KeywordGroupFormData, type KeywordGroupKeyword } from '../../services/keywordGroupService'
 
 const router = useRouter()
 const route = useRoute()
 const isSaving = ref(false)
 const isLoading = ref(true)
 const errors = ref<Record<string, string[]>>({})
+const groupId = ref<string>('')
+const keywords = ref<KeywordGroupKeyword[]>([])
 
 const form = reactive<KeywordGroupFormData>({
   name: '',
@@ -24,6 +27,7 @@ const form = reactive<KeywordGroupFormData>({
 
 const fetchGroup = async () => {
   const id = route.params.id as string
+  groupId.value = id
 
   try {
     isLoading.value = true
@@ -31,6 +35,7 @@ const fetchGroup = async () => {
 
     form.name = data.data.name
     form.slug = data.data.slug
+    keywords.value = data.data.keywords ?? []
   } catch (error) {
     console.error('Hiba a csoport betöltésekor:', error)
     await router.push('/admin/keyword-group')
@@ -76,22 +81,38 @@ onMounted(() => {
       <LoadingSpinner label="Betöltés..." />
     </div>
 
-    <Card v-else>
-      <CardHeader>
-        <CardTitle>Csoport adatai</CardTitle>
-        <CardDescription>Módosítsd a kulcsszó-csoport adatait.</CardDescription>
-      </CardHeader>
-      <CardContent class="space-y-4">
-        <InputField id="name" label="Név" v-model="form.name" placeholder="Példa csoport" :errors="errors.name" />
-        <InputField id="slug" label="Slug" v-model="form.slug" placeholder="pelda-csoport" :errors="errors.slug" />
-      </CardContent>
-      <CardFooter>
-        <FormButtons
-          :is-saving="isSaving"
-          @save="handleSubmit"
-          @cancel="router.push('/admin/keyword-group')"
-        />
-      </CardFooter>
-    </Card>
+    <div v-else class="grid grid-cols-5 gap-6 items-start">
+      <Card class="col-span-2">
+        <CardHeader>
+          <CardTitle>Csoport adatai</CardTitle>
+          <CardDescription>Módosítsd a kulcsszó-csoport adatait.</CardDescription>
+        </CardHeader>
+        <CardContent class="space-y-4">
+          <InputField id="name" label="Név" v-model="form.name" placeholder="Példa csoport" :errors="errors.name" />
+          <InputField id="slug" label="Slug" v-model="form.slug" placeholder="pelda-csoport" :errors="errors.slug" />
+        </CardContent>
+        <CardFooter>
+          <FormButtons
+            :is-saving="isSaving"
+            @save="handleSubmit"
+            @cancel="router.push('/admin/keyword-group')"
+          />
+        </CardFooter>
+      </Card>
+
+      <Card class="col-span-3">
+        <CardHeader>
+          <CardTitle>Kulcsszavak</CardTitle>
+          <CardDescription>A csoporthoz tartozó kulcsszavak kezelése.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <KeywordSelector
+            :group-id="groupId"
+            :keywords="keywords"
+            @update:keywords="keywords = $event"
+          />
+        </CardContent>
+      </Card>
+    </div>
   </AdminLayout>
 </template>

@@ -2,10 +2,16 @@ import { createApiClient } from '@user/services/apiClient'
 
 const api = createApiClient()
 
+export interface KeywordGroupKeyword {
+  id: number
+  name: string
+}
+
 export interface KeywordGroup {
   id: number
   name: string
   slug: string
+  keywords?: KeywordGroupKeyword[]
   created_at: string
   updated_at: string
 }
@@ -53,5 +59,13 @@ export const keywordGroupService = {
 
   delete(id: number | string) {
     return api.delete(`/api/admin/keyword/keyword-groups/${id}`)
+  },
+
+  attachKeyword(groupId: number | string, keywordId: number) {
+    return api.post(`/api/admin/keyword/keyword-groups/${groupId}/keywords`, { keyword_id: keywordId })
+  },
+
+  detachKeyword(groupId: number | string, keywordId: number) {
+    return api.delete(`/api/admin/keyword/keyword-groups/${groupId}/keywords/${keywordId}`)
   },
 }

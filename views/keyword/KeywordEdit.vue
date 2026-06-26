@@ -12,7 +12,7 @@ import Label from '@admin/components/ui/Label.vue'
 import Select from '@admin/components/ui/Select.vue'
 import { onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { keywordService, type KeywordFormData, type KeywordOption } from '../../services/keywordService'
+import { keywordService, type KeywordFormData, type KeywordGroupOption, type KeywordOption } from '../../services/keywordService'
 
 const router = useRouter()
 const route = useRoute()
@@ -20,12 +20,14 @@ const isSaving = ref(false)
 const isLoading = ref(true)
 const errors = ref<Record<string, string[]>>({})
 const aliasOptions = ref<KeywordOption[]>([])
+const groupOptions = ref<KeywordGroupOption[]>([])
 
 const form = reactive<KeywordFormData>({
   name: '',
   slug: '',
   is_stop_word: false,
   alias_keyword_id: null,
+  group_ids: [],
 })
 
 const fetchKeyword = async () => {
@@ -40,14 +42,25 @@ const fetchKeyword = async () => {
       form.slug = data.data.slug
       form.is_stop_word = data.data.is_stop_word
       form.alias_keyword_id = data.data.alias_keyword_id
+      form.group_ids = data.data.group_ids ?? []
     }
 
     aliasOptions.value = data.alias_keywords ?? []
+    groupOptions.value = data.keyword_groups ?? []
   } catch (error) {
     console.error('Hiba a kulcsszo betoltesekor:', error)
     await router.push('/admin/keyword')
   } finally {
     isLoading.value = false
+  }
+}
+
+const toggleGroup = (groupId: number) => {
+  const idx = form.group_ids.indexOf(groupId)
+  if (idx === -1) {
+    form.group_ids.push(groupId)
+  } else {
+    form.group_ids.splice(idx, 1)
   }
 }
 
@@ -116,6 +129,20 @@ onMounted(() => {
           <Label>Stop szo</Label>
         </div>
         <InputError :message="errors.is_stop_word" />
+
+        <div v-if="groupOptions.length" class="space-y-2">
+          <Label>Csoportok</Label>
+          <div class="space-y-1">
+            <div v-for="group in groupOptions" :key="group.id" class="flex items-center gap-2">
+              <Checkbox
+                :model-value="form.group_ids.includes(group.id)"
+                @update:model-value="toggleGroup(group.id)"
+              />
+              <Label>{{ group.name }}</Label>
+            </div>
+          </div>
+          <InputError :message="errors.group_ids" />
+        </div>
       </CardContent>
       <CardFooter>
         <FormButtons
