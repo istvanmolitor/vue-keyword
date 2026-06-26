@@ -23,6 +23,7 @@ const aliasOptions = ref<KeywordOption[]>([])
 
 const form = reactive<KeywordFormData>({
   name: '',
+  slug: '',
   is_stop_word: false,
   alias_keyword_id: null,
 })
@@ -36,6 +37,7 @@ const fetchKeyword = async () => {
 
     if (data.data) {
       form.name = data.data.name
+      form.slug = data.data.slug
       form.is_stop_word = data.data.is_stop_word
       form.alias_keyword_id = data.data.alias_keyword_id
     }
@@ -93,6 +95,7 @@ onMounted(() => {
       </CardHeader>
       <CardContent class="space-y-4">
         <InputField id="name" label="Kulcsszo" v-model="form.name" placeholder="pelda" :errors="errors.name" />
+        <InputField id="slug" label="Slug" v-model="form.slug" placeholder="pelda-kulcsszo" :errors="errors.slug" />
 
         <div class="space-y-2">
           <Label for="alias_keyword_id">Alias keyword</Label>

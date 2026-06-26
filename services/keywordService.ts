@@ -10,6 +10,7 @@ export interface KeywordOption {
 export interface Keyword {
   id: number
   name: string
+  slug: string
   is_stop_word: boolean
   alias_keyword_id: number | null
   alias_keyword?: KeywordOption | null
@@ -17,6 +18,7 @@ export interface Keyword {
 
 export interface KeywordFormData {
   name: string
+  slug: string
   is_stop_word: boolean
   alias_keyword_id: number | null
 }
