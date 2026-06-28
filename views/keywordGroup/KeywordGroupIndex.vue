@@ -19,10 +19,7 @@ const pagination = ref<PaginationMeta>({
   total: 0
 })
 
-const columns: Column<KeywordGroup>[] = [
-  { key: 'name', label: 'Név', sortable: true },
-  { key: 'slug', label: 'Slug', sortable: true },
-]
+const columns = ref<Column[]>([])
 
 const fetchGroups = async (params: {
   search?: string
@@ -35,6 +32,7 @@ const fetchGroups = async (params: {
     const response = await keywordGroupService.getAll(params)
     groups.value = response.data.data
     pagination.value = response.data.meta
+    columns.value = (response.data.columns ?? []) as Column[]
   } catch (error) {
     console.error('Hiba a kulcsszó-csoportok betöltésekor:', error)
   } finally {
