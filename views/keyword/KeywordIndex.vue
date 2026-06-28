@@ -3,48 +3,19 @@ import { AdminLayout, toastService } from '@admin'
 import CreateButton from '@admin/components/ui/button/CreateButton.vue'
 import DeleteButton from '@admin/components/ui/button/DeleteButton.vue'
 import EditButton from '@admin/components/ui/button/EditButton.vue'
-import DataTable, { type Column, type PaginationMeta } from '@admin/components/ui/dataTable/DataTable.vue'
-import { onMounted, ref } from 'vue'
+import DataTable from '@admin/components/ui/dataTable/DataTable.vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { keywordService, type Keyword } from '../../services/keywordService'
+import { keywordService } from '../../services/keywordService'
 
 const router = useRouter()
-const keywords = ref<Keyword[]>([])
-const isLoading = ref(false)
-
-const pagination = ref<PaginationMeta>({
-  current_page: 1,
-  last_page: 1,
-  per_page: 10,
-  total: 0
-})
-
-const columns = ref<Column[]>([])
-
-const fetchKeywords = async (params: {
-  search?: string
-  sort?: string
-  direction?: 'asc' | 'desc'
-  page?: number
-}) => {
-  try {
-    isLoading.value = true
-    const response = await keywordService.getAll(params)
-    keywords.value = response.data.data
-    pagination.value = response.data.meta
-    columns.value = (response.data.columns ?? []) as Column[]
-  } catch (error) {
-    console.error('Hiba a kulcsszavak betoltesekor:', error)
-  } finally {
-    isLoading.value = false
-  }
-}
+const table = ref()
 
 const deleteKeyword = async (id: number) => {
   try {
     await keywordService.delete(id)
     toastService.success('A kulcsszo sikeresen torolve!')
-    await fetchKeywords({ page: pagination.value.current_page })
+    table.value?.refresh()
   } catch (error) {
     console.error('Hiba a kulcsszo torlesekor:', error)
     toastService.error('Hiba tortent a torles soran.')
@@ -54,35 +25,25 @@ const deleteKeyword = async (id: number) => {
 const editKeyword = (id: number) => {
   router.push(`/admin/keyword/${id}/edit`)
 }
-
-onMounted(() => {
-  fetchKeywords({ page: 1, sort: 'name', direction: 'asc' })
-})
 </script>
 
 <template>
   <AdminLayout page-title="Kulcsszavak">
     <DataTable
-      :columns="columns"
-      :data="keywords"
-      :loading="isLoading"
-      :pagination="pagination"
-      search-placeholder="Kereses kulcsszo alapjan..."
-      default-sort="name"
-      default-direction="asc"
-      @fetch="fetchKeywords"
+      ref="table"
+      url="/api/admin/keyword/keywords"
     >
       <template #actions>
         <CreateButton to="/admin/keyword/create">Uj Keyword</CreateButton>
       </template>
 
       <template #cell-alias_keyword="{ row }">
-        <span>{{ row.alias_keyword?.name ?? '-' }}</span>
+        <span>{{ (row as any).alias_keyword?.name ?? '-' }}</span>
       </template>
 
       <template #cell-is_stop_word="{ row }">
         <span
-          v-if="row.is_stop_word"
+          v-if="(row as any).is_stop_word"
           class="rounded bg-yellow-100 px-2 py-1 text-xs text-yellow-800"
         >
           Igen
@@ -96,8 +57,8 @@ onMounted(() => {
       </template>
 
       <template #row-actions="{ row }">
-        <EditButton @click="editKeyword(row.id)" />
-        <DeleteButton @confirm="deleteKeyword(row.id)" />
+        <EditButton @click="editKeyword((row as any).id)" />
+        <DeleteButton @confirm="deleteKeyword((row as any).id)" />
       </template>
 
       <template #empty>
