@@ -6,7 +6,7 @@ import CardDescription from '@admin/components/ui/CardDescription.vue'
 import CardFooter from '@admin/components/ui/CardFooter.vue'
 import CardHeader from '@admin/components/ui/CardHeader.vue'
 import CardTitle from '@admin/components/ui/CardTitle.vue'
-import Checkbox from '@admin/components/ui/Checkbox.vue'
+import CheckboxField from '@admin/components/ui/CheckboxField.vue'
 import InputField from '@admin/components/ui/InputField.vue'
 import Label from '@admin/components/ui/Label.vue'
 import Select from '@admin/components/ui/Select.vue'
@@ -124,22 +124,19 @@ onMounted(() => {
           <InputError :message="errors.alias_keyword_id" />
         </div>
 
-        <div class="flex items-center gap-2">
-          <Checkbox v-model="form.is_stop_word" />
-          <Label>Stop szo</Label>
-        </div>
-        <InputError :message="errors.is_stop_word" />
+        <CheckboxField id="is_stop_word" label="Stop szo" v-model="form.is_stop_word" :errors="errors.is_stop_word" />
 
         <div v-if="groupOptions.length" class="space-y-2">
           <Label>Csoportok</Label>
           <div class="space-y-1">
-            <div v-for="group in groupOptions" :key="group.id" class="flex items-center gap-2">
-              <Checkbox
-                :model-value="form.group_ids.includes(group.id)"
-                @update:model-value="toggleGroup(group.id)"
-              />
-              <Label>{{ group.name }}</Label>
-            </div>
+            <CheckboxField
+              v-for="group in groupOptions"
+              :key="group.id"
+              :id="`group-${group.id}`"
+              :label="group.name"
+              :model-value="form.group_ids.includes(group.id)"
+              @update:model-value="toggleGroup(group.id)"
+            />
           </div>
           <InputError :message="errors.group_ids" />
         </div>

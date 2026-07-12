@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { AdminLayout, BackButton, Checkbox, FormButtons, InputError, toastService } from '@admin'
-import Label from '@admin/components/ui/Label.vue'
+import { AdminLayout, BackButton, CheckboxField, FormButtons, InputError, toastService } from '@admin'
 import Card from '@admin/components/ui/Card.vue'
 import CardContent from '@admin/components/ui/CardContent.vue'
 import CardDescription from '@admin/components/ui/CardDescription.vue'
@@ -83,10 +82,7 @@ const handleSubmit = async () => {
         <InputField id="name" label="Név" v-model="form.name" placeholder="Példa csoport" :errors="errors.name" />
         <InputField id="slug" label="Slug" v-model="form.slug" placeholder="pelda-csoport" :errors="errors.slug" />
         <InputError :message="errors.slug" />
-        <div class="flex items-center gap-2">
-          <Checkbox id="is_public" v-model="form.is_public" />
-          <Label for="is_public">Nyilvános</Label>
-        </div>
+        <CheckboxField id="is_public" label="Nyilvános" v-model="form.is_public" />
       </CardContent>
       <CardFooter>
         <FormButtons

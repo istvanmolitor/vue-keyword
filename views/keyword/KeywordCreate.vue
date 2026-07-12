@@ -6,7 +6,7 @@ import CardDescription from '@admin/components/ui/CardDescription.vue'
 import CardFooter from '@admin/components/ui/CardFooter.vue'
 import CardHeader from '@admin/components/ui/CardHeader.vue'
 import CardTitle from '@admin/components/ui/CardTitle.vue'
-import Checkbox from '@admin/components/ui/Checkbox.vue'
+import CheckboxField from '@admin/components/ui/CheckboxField.vue'
 import InputField from '@admin/components/ui/InputField.vue'
 import Label from '@admin/components/ui/Label.vue'
 import Select from '@admin/components/ui/Select.vue'
@@ -111,11 +111,7 @@ onMounted(() => {
           <InputError :message="errors.alias_keyword_id" />
         </div>
 
-        <div class="flex items-center gap-2">
-          <Checkbox v-model="form.is_stop_word" />
-          <Label>Stop szo</Label>
-        </div>
-        <InputError :message="errors.is_stop_word" />
+        <CheckboxField id="is_stop_word" label="Stop szo" v-model="form.is_stop_word" :errors="errors.is_stop_word" />
       </CardContent>
       <CardFooter>
         <FormButtons
